@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:twake_chat/config/go_routes/app_routes.dart';
 
 import 'package:twake_chat/config/first_column_inner_routes.dart';
 import 'package:twake_chat/event/twake_inapp_event_types.dart';
@@ -59,10 +60,15 @@ class AppAdaptiveScaffoldBodyController extends State<AppAdaptiveScaffoldBody>
     AdaptiveDestinationEnum.contacts,
     AdaptiveDestinationEnum.rooms,
     AdaptiveDestinationEnum.settings,
+    AdaptiveDestinationEnum.brancardage,
   ];
 
   void onDestinationSelected(int index) {
     final destinationType = destinations[index];
+    if (destinationType == AdaptiveDestinationEnum.brancardage) {
+      const BrancardageRoute().push(context);
+      return;
+    }
     activeNavigationBarNotifier.value = destinationType;
     pageController.jumpToPage(index);
     clearNavigatorScreen();

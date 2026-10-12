@@ -1,3 +1,12 @@
+# ChatPorter alpha preview
+
+This fork adds an optional transport-request workflow to Twake Chat.
+See [CHATPORTER.md](CHATPORTER.md) for the scope and limitations, and the
+[separate service](https://github.com/samoussaveur/chatporter-service).
+Only invented demonstration locations are included.
+
+---
+
 # Twake Chat Client
 
 [![Contributors](https://img.shields.io/github/contributors/linagora/twake-on-matrix?label=Contributors)](https://github.com/linagora/twake-on-matrix/graphs/contributors)

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:twake_chat/modules/brancardage/brancardage_page.dart';
 
 import 'package:twake_chat/config/first_column_inner_routes.dart';
 import 'package:twake_chat/di/global/get_it_initializer.dart';
@@ -937,4 +938,20 @@ class PinnedMessagesRoute extends GoRouteData with $PinnedMessagesRoute {
       child: PinnedMessages(pinnedEvents: []),
     );
   }
+}
+
+@TypedGoRoute<BrancardageRoute>(path: '/brancardage')
+class BrancardageRoute extends GoRouteData with $BrancardageRoute {
+  const BrancardageRoute();
+  @override
+  FutureOr<String?> redirect(BuildContext context, GoRouterState state) =>
+      _loggedOutRedirect(context, state);
+  @override
+  Page<void> buildPage(BuildContext context, GoRouterState state) =>
+      _defaultPage(
+        context,
+        BrancardagePage(
+          onReturnToMessaging: () => const RoomsRoute().go(context),
+        ),
+      );
 }

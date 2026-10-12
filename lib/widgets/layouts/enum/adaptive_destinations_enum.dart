@@ -11,7 +11,8 @@ import 'package:matrix/matrix.dart';
 enum AdaptiveDestinationEnum {
   contacts,
   rooms,
-  settings;
+  settings,
+  brancardage;
 
   NavigationDestination getNavigationDestination(
     BuildContext context,
@@ -43,6 +44,11 @@ enum AdaptiveDestinationEnum {
             isSelected: true,
           ),
           label: L10n.of(context)!.chats,
+        );
+      case AdaptiveDestinationEnum.brancardage:
+        return const NavigationDestination(
+          icon: TwakeNavigationIcon(icon: Icons.local_shipping_outlined),
+          label: 'Brancardage',
         );
       case AdaptiveDestinationEnum.settings:
         return NavigationDestination(
@@ -88,6 +94,11 @@ enum AdaptiveDestinationEnum {
             isSelected: true,
           ),
           label: L10n.of(context)!.chats,
+        );
+      case AdaptiveDestinationEnum.brancardage:
+        return const BottomNavigationBarItem(
+          icon: Icon(Icons.local_shipping_outlined),
+          label: 'Brancardage',
         );
       case AdaptiveDestinationEnum.settings:
         return BottomNavigationBarItem(
