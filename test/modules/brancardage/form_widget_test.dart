@@ -18,7 +18,9 @@ void main() {
       await tester.pumpAndSettle();
       await tester.enterText(origin, 'Demo service A');
       await tester.pumpAndSettle();
-      final chamber = find.text('Demo service A · Demo room').hitTestable();
+      final chamber = find
+          .text('Demo service A · Demo room')
+          .hitTestable();
       expect(chamber, findsOneWidget);
       await tester.tap(chamber);
       await tester.pumpAndSettle();

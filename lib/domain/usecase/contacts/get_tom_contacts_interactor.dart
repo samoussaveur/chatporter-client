@@ -1,3 +1,4 @@
+import 'package:twake_chat/data/network/contact/address_book_api.dart';
 import 'package:dartz/dartz.dart';
 import 'package:twake_chat/app_state/failure.dart';
 import 'package:twake_chat/app_state/success.dart';
@@ -26,7 +27,7 @@ class GetTomContactsInteractor {
   }
 
   Stream<Either<Failure, Success>> execute() async* {
-    if (!_isToMServerConfigured) {
+    if (!_isToMServerConfigured && !AddressBookApi.chatPorterContactsEnabled) {
       yield const Left(GetContactsIsEmpty());
       return;
     }

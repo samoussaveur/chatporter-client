@@ -1,3 +1,4 @@
+import 'package:twake_chat/modules/brancardage/delete_confirmation.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:twake_chat/widgets/matrix.dart';
@@ -435,6 +436,52 @@ class _BrancardagePageState extends State<BrancardagePage> {
         ),
     ],
   );
+  Future<void> _deleteRequest() async {
+    final id = _selected;
+    final request = _detail;
+    if (_busy || id == null || request == null || _me?['role'] != 'admin') {
+      return;
+    }
+    final generation = _generation;
+    final api = _api!;
+    setState(() => _busy = true);
+    try {
+      final deleted = await confirmRequestDeletion(
+        context,
+        reference: request['reference'].toString(),
+        stillCurrent: () =>
+            mounted && generation == _generation && _selected == id,
+        prepare: () async {
+          final result = await api.call(
+            'requests/$id/delete-prepare',
+            body: {},
+          );
+          return result['challenge'] as String;
+        },
+        commit: (challenge) async {
+          await api.call(
+            'requests/$id/delete-confirm',
+            body: {'challenge': challenge, 'confirmed': true},
+          );
+        },
+      );
+      if (!mounted || generation != _generation) return;
+      if (deleted) {
+        setState(() {
+          _selected = null;
+          _detail = null;
+        });
+        await _refresh();
+      }
+    } catch (error) {
+      if (mounted && generation == _generation) {
+        setState(() => _error = error.toString());
+      }
+    } finally {
+      if (mounted && generation == _generation) setState(() => _busy = false);
+    }
+  }
+
   Widget _request() {
     final r = _detail;
     if (r == null) {
@@ -540,6 +587,18 @@ class _BrancardagePageState extends State<BrancardagePage> {
                   child: const Text('Désarchiver'),
                 ),
             ],
+          ),
+        if (_me?['role'] == 'admin')
+          Align(
+            alignment: AlignmentDirectional.centerStart,
+            child: OutlinedButton.icon(
+              onPressed: _busy ? null : _deleteRequest,
+              style: OutlinedButton.styleFrom(
+                foregroundColor: Theme.of(context).colorScheme.error,
+              ),
+              icon: const Icon(Icons.delete_forever_outlined),
+              label: const Text('Supprimer définitivement'),
+            ),
           ),
         const Divider(height: 40),
         Text(

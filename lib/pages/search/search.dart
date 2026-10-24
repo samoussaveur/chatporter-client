@@ -1,3 +1,5 @@
+import 'package:twake_chat/modules/brancardage/brancardage_api.dart';
+import 'package:twake_chat/modules/directory/staff_directory.dart';
 import 'package:dartz/dartz.dart' hide State;
 import 'package:twake_chat/app_state/failure.dart';
 import 'package:twake_chat/app_state/success.dart';
@@ -38,6 +40,7 @@ class SearchController extends State<Search> with WidgetsBindingObserver {
 
   SearchContactsAndChatsController? searchContactAndRecentChatController;
   final serverSearchController = ServerSearchController();
+  StaffDirectory? staffDirectory;
 
   final _preSearchRecentContactsInteractor = getIt
       .get<PreSearchRecentContactsInteractor>();
@@ -168,18 +171,24 @@ class SearchController extends State<Search> with WidgetsBindingObserver {
     super.initState();
     SchedulerBinding.instance.addPostFrameCallback((_) async {
       if (mounted) {
-        await searchContactAndRecentChatController?.init();
-        serverSearchController.initSearch(context: context);
-        fetchPreSearchRecentContacts();
+        staffDirectory = StaffDirectory(
+          BrancardageApi(client.accessToken ?? ''),
+        );
         textEditingController.addListener(() {
           onSearchBarChanged(textEditingController.text);
         });
+        setState(() {});
+        await searchContactAndRecentChatController?.init();
+        if (!mounted) return;
+        serverSearchController.initSearch(context: context);
+        fetchPreSearchRecentContacts();
         scrollController.addLoadMoreListener(loadMore);
       }
     });
   }
 
   void onSearchBarChanged(String keyword) {
+    staffDirectory?.search(keyword);
     searchContactAndRecentChatController?.onSearchBarChanged(keyword);
     serverSearchController.onSearchBarChanged(keyword);
   }
@@ -213,6 +222,7 @@ class SearchController extends State<Search> with WidgetsBindingObserver {
   @override
   void dispose() {
     searchContactAndRecentChatController?.dispose();
+    staffDirectory?.dispose();
     serverSearchController.dispose();
     preSearchRecentContactsNotifier.dispose();
     textEditingController.dispose();

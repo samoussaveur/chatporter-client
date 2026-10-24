@@ -1,3 +1,5 @@
+import 'package:twake_chat/modules/directory/staff_directory_section.dart';
+import 'package:twake_chat/presentation/model/search/presentation_search.dart';
 import 'package:twake_chat/domain/app_state/search/pre_search_state.dart';
 import 'package:twake_chat/pages/search/recent_contacts_banner_widget.dart';
 import 'package:twake_chat/pages/search/recent_item_widget.dart';
@@ -31,6 +33,18 @@ class SearchView extends StatelessWidget {
         physics: const ClampingScrollPhysics(),
         controller: searchController.scrollController,
         slivers: [
+          if (searchController.staffDirectory != null)
+            SliverToBoxAdapter(
+              child: StaffDirectorySection(
+                directory: searchController.staffDirectory!,
+                onTap: (person) => searchController.onContactTap(
+                  ContactPresentationSearch(
+                    matrixId: person.id,
+                    displayName: person.displayName,
+                  ),
+                ),
+              ),
+            ),
           ValueListenableBuilder(
             valueListenable: searchController.preSearchRecentContactsNotifier,
             builder: (context, value, emptyChild) =>
